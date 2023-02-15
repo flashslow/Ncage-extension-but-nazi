@@ -1,0 +1,107 @@
+(function() {
+	//nCage 
+	var main = function($) { 
+		
+		var self = $.nCage = new function(){};
+		
+		$.extend(self, {
+			nCageImgs : [
+			'https://en.wikipedia.org/wiki/Adolf_Hitler#/media/Ficheiro:Hitler_portrait_crop.jpg',
+			'https://upload.wikimedia.org/wikipedia/en/d/db/Adolf_Hitler_in_Paris_1940.jpg',
+			'https://upload.wikimedia.org/wikipedia/en/9/95/Hitler_20_April_1945.jpg',
+			'https://cdn.britannica.com/58/129958-050-C3FE2DD2/Adolf-Hitler-1933.jpg',
+			'https://cdn.britannica.com/59/129959-050-565D90D4/Adolf-Hitler-1930s.jpg',
+			'https://cdn.britannica.com/64/129964-050-48F1BC57/Adolf-Hitler-rally.jpg',
+			'https://cdn.britannica.com/62/129962-050-C26B63A7/Adolf-Hitler-Benito-Mussolini.jpg',
+			'https://cdn.britannica.com/63/190963-050-CD51442B/Heinrich-Himmler-assembly-Adolf-Hitler-guard.jpg',
+			'https://s3.static.brasilescola.uol.com.br/img/2019/10/nuremberg.jpg',
+			'https://s1.static.brasilescola.uol.com.br/img/2019/10/eva-braun.jpg',
+			'https://imagens.brasil.elpais.com/resizer/FngF_8fGppfet6u5TmORRNq0Zzs=/980x0/cloudfront-eu-central-1.images.arcpublishing.com/prisa/HVNUWQA2ACEYODZ46KWZ7UX3PM.jpg',
+			'https://cdn-live.foreignaffairs.com/sites/default/files/styles/_webp_large_1x/public/public-assets/images/articles/2015/08/18/screen_shot_2015-08-18_at_9.12.52_pm.png.webp?itok=Me8rb9kx',
+			'https://images.uncyc.org/pt/a/a4/Negronazista.jpg',
+			'https://images.gr-assets.com/hostedimages/1535479301ra/26214598.gif',
+			'https://images.uncyc.org/pt/a/a4/Negronazista.jpg',
+			'https://images.uncyc.org/pt/4/4f/Neonazi-4-600x481.jpg',
+			'https://static.vakinha.com.br/uploads/descriptions/1578444184/82135840_144682313624875_1987461520262430720_n.jpg',
+			'https://phantom-marca.unidadeditorial.es/a829173b6d285e7038fdbb0d3486a5a3/resize/660/f/webp/assets/multimedia/imagenes/2022/10/27/16668971717902.jpg',
+			'https://www.facinghistory.org/sites/default/files/styles/standard_hero_article_520_408_2x/public/2022-05/HHB_Chapter_6_Medium_res.webp?h=193b5c49&itok=ogaXlLkO',
+			'https://live-production.wcms.abc-cdn.net.au/8e28cf37d48ed76e5d01ec6b740461c8?impolicy=wcms_crop_resize&cropH=862&cropW=1296&xPos=0&yPos=3&width=862&height=575',
+			'https://static01.nyt.com/images/2015/10/20/nyregion/GERMANSweb1/GERMANSweb1-superJumbo.jpg?quality=75&auto=webp',
+			'https://static.timesofisrael.com/www/uploads/2018/11/AP_350932320767.jpg',
+			'https://www.inquirer.com/resizer/dpDK0Gqra1TxCmKeW2TxXf4Wfs4=/700x467/smart/filters:format(webp)/cloudfront-us-east-1.images.arcpublishing.com/pmn/PJBLTQYVKRARFMHHGCXAXX7AHE.jpg',
+			'https://i.redd.it/5qouyv0kt5o81.jpg',
+			'https://i.natgeofe.com/n/430ea221-3feb-4e7e-ade9-b507a34f832a/03-douglas-chandler-lost-found.jpg?w=1280&h=854',
+			'https://api.time.com/wp-content/uploads/2020/06/nazi.jpg',
+			],
+			handleImages : function (lstImgs, time)
+			{
+				$.each($('img'), function(i,item) { 
+					//Skip if image is already replaced
+					if($.inArray($(item).attr('src'), lstImgs) == -1)
+					{
+						var h = $(item).height();
+						var w = $(item).width();
+						
+						//If image loaded
+						if(h > 0 && w > 0)
+						{
+							//Replace
+							$(item).css('width', w + 'px').css('height', h + 'px');
+							$(item).attr('src', lstImgs[Math.floor(Math.random() * lstImgs.length)]); 
+						}
+						else
+						{
+							//Replace when loaded
+							$(item).load(function(){
+								//Prevent 'infinite' loop
+									if($.inArray($(item).attr('src'), lstImgs) == -1)
+									{
+										var h = $(item).height();
+										var w = $(item).width();
+										$(item).css('width', w + 'px').css('height', h + 'px');
+										$(item).attr('src', lstImgs[Math.floor(Math.random() * lstImgs.length)]); 
+									}
+								});
+							}
+						}
+					});
+					
+					//Keep replacing
+					if(time > 0)
+						setTimeout(function(){self.handleImages(lstImgs, time);},time);
+				}
+			});
+
+		//Run on jQuery ready
+		$(function(){
+			self.handleImages(self.nCageImgs, 3000);
+		});
+	};
+
+	//Method to load jQuery
+	function loadJS(src, callback) {
+		var s = document.createElement('script');
+		s.src = src;
+		s.async = true;
+		s.onreadystatechange = s.onload = function() {
+			var state = s.readyState;
+			if (!callback.done && (!state || /loaded|complete/.test(state))) {
+				callback.done = true;
+				callback();
+			}
+		};
+		document.getElementsByTagName('head')[0].appendChild(s);
+	}
+	
+	//Add jQuery if not present, then run main
+	if(typeof jQuery == 'undefined') {
+		loadJS(('https:' == document.location.protocol ? 'https://' : 'http://') + 'ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js', function(){
+			jQuery.noConflict();
+			main(jQuery);
+		});
+	}else {
+		main(jQuery);
+	}
+ })();
+ 
+
